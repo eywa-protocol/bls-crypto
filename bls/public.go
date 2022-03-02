@@ -15,7 +15,12 @@ func ZeroPublicKey() PublicKey {
 
 // Aggregate adds the given public keys
 func (pub PublicKey) Aggregate(onemore PublicKey) PublicKey {
-	p := new(bn256.G2).Set(pub.p)
+	var p *bn256.G2
+	if pub.p == nil {
+		p = new(bn256.G2).Set(&zeroG2)
+	} else {
+		p = new(bn256.G2).Set(pub.p)
+	}
 	p.Add(p, onemore.p)
 	return PublicKey{p: p}
 }

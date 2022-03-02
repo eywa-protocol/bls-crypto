@@ -57,7 +57,12 @@ func (signature Signature) VerifyMultisig(aggPublicKey PublicKey, publicKey Publ
 
 // Aggregate adds the given signatures
 func (signature Signature) Aggregate(onemore Signature) Signature {
-	p := new(bn256.G1).Set(signature.p)
+	var p *bn256.G1
+	if signature.p == nil {
+		p = new(bn256.G1).Set(&zeroG1)
+	} else {
+		p = new(bn256.G1).Set(signature.p)
+	}
 	p.Add(p, onemore.p)
 	return Signature{p: p}
 }

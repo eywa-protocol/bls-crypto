@@ -18,6 +18,10 @@ func (secretKey *PrivateKey) UnmarshalJSON(data []byte) error {
 	return err
 }
 
+func ReadPrivateKey(str string) (PrivateKey, error) {
+	return UnmarshalPrivateKey([]byte(str))
+}
+
 func (publicKey PublicKey) MarshalJSON() ([]byte, error) {
 	raw := publicKey.Marshal()
 	if raw == nil {
@@ -40,6 +44,14 @@ func (publicKey *PublicKey) UnmarshalJSON(data []byte) error {
 	return err
 }
 
+func ReadPublicKey(str string) (PublicKey, error) {
+	raw, err := hex.DecodeString(str)
+	if err != nil {
+		return PublicKey{}, err
+	}
+	return UnmarshalPublicKey(raw)
+}
+
 func (signature Signature) MarshalJSON() ([]byte, error) {
 	raw := signature.Marshal()
 	if raw == nil {
@@ -60,4 +72,12 @@ func (signature *Signature) UnmarshalJSON(data []byte) error {
 	sig, err := UnmarshalSignature(raw)
 	*signature = sig
 	return err
+}
+
+func ReadSignature(str string) (Signature, error) {
+	raw, err := hex.DecodeString(str)
+	if err != nil {
+		return Signature{}, err
+	}
+	return UnmarshalSignature(raw)
 }
