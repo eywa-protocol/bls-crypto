@@ -22,9 +22,9 @@ func GenerateRandomKey() (PrivateKey, PublicKey) {
 	return PrivateKey{p: priv}, PublicKey{p: pub}
 }
 
-// EmptyMultisigMask returns zero bitmask
-func EmptyMultisigMask() big.Int {
-	return *big.NewInt(0)
+// ZeroMultisigMask returns zero bitmask
+func ZeroMultisigMask() *big.Int {
+	return big.NewInt(0)
 }
 
 // hashToPointMsg performs "message augmentation": hashes the message and the

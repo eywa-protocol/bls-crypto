@@ -15,6 +15,15 @@ type Multisig struct {
 	PartMask      *big.Int  // bitmask of participants
 }
 
+// NewZeroMultisig returns zero multisignature
+func NewZeroMultisig() Multisig {
+	return Multisig{
+		PartSignature: ZeroSignature(),
+		PartPublicKey: ZeroPublicKey(),
+		PartMask:      ZeroMultisigMask(),
+	}
+}
+
 // Verify checks the BLS multisignature of the message against:
 // * the aggregated public key of all its signers (whether signed or not),
 // * the aggregated public key of participated signers (who really signed),

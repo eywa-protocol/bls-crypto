@@ -46,7 +46,7 @@ func (secretKey PrivateKey) Marshal() []byte {
 	if secretKey.p == nil {
 		return nil
 	}
-	return []byte(secretKey.p.Text(16))
+	return []byte(secretKey.p.String())
 }
 
 // UnmarshalBlsPrivateKey reads the private key from the given byte array

@@ -3,6 +3,7 @@ package bls
 import (
 	"encoding/hex"
 	"encoding/json"
+	"math/big"
 )
 
 func (secretKey PrivateKey) MarshalJSON() ([]byte, error) {
@@ -83,4 +84,18 @@ func ReadSignature(str string) (Signature, error) {
 		return Signature{}, err
 	}
 	return UnmarshalSignature(raw)
+}
+
+func MarshalBitmask(mask *big.Int) []byte {
+	if mask == nil {
+		return nil
+	}
+	return mask.Bytes()
+}
+
+func UnmarshalBitmask(data []byte) *big.Int {
+	if data == nil {
+		return nil
+	}
+	return new(big.Int).SetBytes(data)
 }
