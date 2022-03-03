@@ -44,6 +44,7 @@ func Test_MarshallUnmarshallJson(t *testing.T) {
 	err = json.Unmarshal(raw, &inmsg)
 	require.NoError(t, err)
 	require.Equal(t, len(inmsg.Multis), len(outmsg.Multis))
+	require.Equal(t, inmsg.Multis, outmsg.Multis)
 	for i, _ := range inmsg.Privs {
 		require.Equal(t, 0, bytes.Compare(inmsg.Privs[i].Marshal(), privs[i].Marshal()))
 		require.Equal(t, 0, bytes.Compare(inmsg.Multis[i].PartPublicKey.Marshal(), pubs[i].Marshal()))
