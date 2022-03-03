@@ -57,7 +57,22 @@ func Test_MarshallUnmarshallJson(t *testing.T) {
 	require.Equal(t, inmsg.MultiEmpty.PartMask.String(), outmsg.MultiEmpty.PartMask.String())
 }
 
-func Test_Read(t *testing.T) {
+func Test_MarshalUnmarshaKeys(t *testing.T) {
+	_, err := bls.ReadPrivateKey("hi")
+	require.Error(t, err)
+
+	priv, pub := bls.GenerateRandomKey()
+
+	privm, err := bls.UnmarshalPrivateKey(priv.Marshal())
+	require.NoError(t, err)
+	require.Equal(t, priv, privm)
+
+	pubm, err := bls.UnmarshalPublicKey(pub.Marshal())
+	require.NoError(t, err)
+	require.Equal(t, pub, pubm)
+}
+
+func Test_ReadKeys(t *testing.T) {
 	_, err := bls.ReadPublicKey("hi")
 	require.Error(t, err)
 

@@ -20,10 +20,12 @@ func (secretKey *PrivateKey) UnmarshalJSON(data []byte) error {
 }
 
 func ReadPrivateKey(str string) (PrivateKey, error) {
-	if str[0:2] != "0x" && str[0:2] != "0X" {
-		str = "0x" + str
+	bin, err := hex.DecodeString(str)
+	if err != nil {
+		return PrivateKey{}, err
 	}
-	return UnmarshalPrivateKey([]byte(str))
+	p := new(big.Int).SetBytes(bin)
+	return PrivateKey{p: p}, err
 }
 
 func (publicKey PublicKey) MarshalJSON() ([]byte, error) {
