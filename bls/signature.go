@@ -36,25 +36,6 @@ func (signature Signature) VerifyMembershipKeyPart(aggPublicKey PublicKey, partP
 	return bn256.PairingCheck(a, b)
 }
 
-// VerifyMultisig checks the BLS multisignature of the message against:
-// * the aggregated public key of all its signers (whether signed or not),
-// * the aggregated public key of participated signers (who really signed),
-// * and the bitmask of signers
-func (signature Signature) VerifyMultisig(aggPublicKey PublicKey, publicKey PublicKey, message []byte, bitmask *big.Int) bool {
-	sum := new(bn256.G1).Set(&zeroG1)
-	mask := new(big.Int).Set(bitmask)
-	for index := 0; mask.Sign() != 0; index++ {
-		if bitmask.Bit(index) != 0 {
-			mask.SetBit(mask, index, 0)
-			sum.Add(sum, hashToPointIndex(aggPublicKey.p, byte(index)))
-		}
-	}
-
-	a := []*bn256.G1{new(bn256.G1).Neg(signature.p), hashToPointMsg(aggPublicKey.p, message), sum}
-	b := []*bn256.G2{&g2, publicKey.p, aggPublicKey.p}
-	return bn256.PairingCheck(a, b)
-}
-
 // Aggregate adds the given signatures
 func (signature Signature) Aggregate(onemore Signature) Signature {
 	var p *bn256.G1

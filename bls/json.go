@@ -19,6 +19,9 @@ func (secretKey *PrivateKey) UnmarshalJSON(data []byte) error {
 }
 
 func ReadPrivateKey(str string) (PrivateKey, error) {
+	if str[0:2] != "0x" && str[0:2] != "0X" {
+		str = "0x" + str
+	}
 	return UnmarshalPrivateKey([]byte(str))
 }
 

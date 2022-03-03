@@ -33,14 +33,15 @@ func Test_VerifyMultisigDemo(t *testing.T) {
 		Aggregate(priv2.GenerateMembershipKeyPart(2, allPub, Simple))
 
 	// Sign only by #0 and #2
-	mask := big.NewInt(0b101)
 	sig0 := priv0.Multisign(msg, allPub, mk0)
 	sig2 := priv2.Multisign(msg, allPub, mk2)
 	subSig := sig0.Aggregate(sig2)
 	subPub := pub0.Aggregate(pub2)
 
 	// Verify in Golang
-	require.True(t, subSig.VerifyMultisig(allPub, subPub, msg, mask))
+	mask := big.NewInt(0b101)
+	multi := bls.Multisig{PartSignature: subSig, PartPublicKey: subPub, PartMask: mask}
+	require.True(t, multi.Verify(allPub, msg))
 
 	// Verify in EVM
 	_, err := blsSignatureTest.VerifyMultisignature(owner, allPub.Marshal(), subPub.Marshal(), msg, subSig.Marshal(), mask)
@@ -78,7 +79,8 @@ func verifyMultisigTest(t *testing.T, mask int64) {
 	require.True(t, verifiedSol)
 
 	// verify in golang code as well
-	require.True(t, sig.VerifyMultisig(aggPub, pub, msg, bitmask))
+	multi := bls.Multisig{PartSignature: sig, PartPublicKey: pub, PartMask: bitmask}
+	require.True(t, multi.Verify(aggPub, msg))
 }
 
 func Test_VerifyMultisigManual(t *testing.T) {
@@ -97,7 +99,8 @@ func Test_VerifyMultisigManual(t *testing.T) {
 	require.True(t, verifiedSol)
 
 	//bitmask = new(big.Int).SetBit(bitmask, 0, 0)
-	require.True(t, sig.VerifyMultisig(aggPub, pub, msg, bitmask))
+	multi := bls.Multisig{PartSignature: sig, PartPublicKey: pub, PartMask: bitmask}
+	require.True(t, multi.Verify(aggPub, msg))
 }
 
 func Test_Verify63MultisigInSolidity(t *testing.T) {
